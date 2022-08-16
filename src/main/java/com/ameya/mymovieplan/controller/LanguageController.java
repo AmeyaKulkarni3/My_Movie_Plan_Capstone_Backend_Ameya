@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/language")
+@RequestMapping("/language")
 public class LanguageController {
 
 	@Autowired

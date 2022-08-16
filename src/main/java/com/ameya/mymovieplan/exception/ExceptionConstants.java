@@ -23,7 +23,21 @@ public enum ExceptionConstants {
 	LANGUAGE_ALREADY_EXISTS("language.already.exists"),
 	LANGUAGE_NOT_FOUND("language.not.found"),
 	SHOWTIME_ALREADY_EXISTS("showtime.already.exists"),
-	SHOWTIME_NOT_FOUND("showtime.not.found");
+	SHOWTIME_NOT_FOUND("showtime.not.found"),
+	THEATER_ALREADY_EXISTS("theater.already.exists"),
+	THEATER_NOT_FOUND("theater.not.found"),
+	TIER_ALREADY_EXISTS("tier.already.exists"),
+	TIER_NOT_FOUND("tier.not.found"),
+	MOVIE_ALREADY_EXISTS("movie.already.exists"),
+	MOVIE_NOT_FOUND("movie.not.found"),
+	SCHEDULE_ALREADY_EXISTS("schedule.already.exists"),
+	SCHEDULE_NOT_FOUND("schedule.not.found"),
+	SCHEDULE_NOT_POSSIBLE("schedule.not.possible"),
+	BOOKING_ALREADY_EXISTS("booking.already.exists"),
+	BOOKING_NOT_FOUND("booking.not.found"),
+	BOOKING_NOT_POSSIBLE("booking.not.possible"),
+	SEAT_ALREADY_EXISTS("seat.already.exists"),
+	SEAT_NOT_FOUND("seat.not.found");
 	
 	private final String type;
 

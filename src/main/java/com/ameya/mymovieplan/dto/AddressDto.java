@@ -10,5 +10,6 @@ public class AddressDto {
 	private String line2;
 	private CityDto cityDto;
 	private String pincode;
+	private TheaterDto theater;
 
 }

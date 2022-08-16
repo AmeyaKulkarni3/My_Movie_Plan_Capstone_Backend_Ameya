@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/genre")
+@RequestMapping("/genre")
 public class GenreController {
 
 	@Autowired

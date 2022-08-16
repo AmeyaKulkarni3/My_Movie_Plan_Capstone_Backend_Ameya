@@ -61,26 +61,6 @@ public class ShowtimeServiceImpl implements ShowtimeService {
 		ShowtimeDto sdto = new ShowtimeDto();
 		sdto.setId(st.getId());
 		sdto.setTime(st.getTime());
-		List<Theater> theaters = st.getTheaters();
-		List<TheaterDto> theaterDtos = new ArrayList<>();
-		for(Theater t : theaters) {
-			TheaterDto tdto = new TheaterDto();
-			Address a = t.getAddress();
-			City c = t.getCity();
-			CityDto cdto = new CityDto();
-			cdto.setId(c.getId());
-			cdto.setName(c.getName());
-			AddressDto adto = new AddressDto();
-			adto.setId(a.getId());
-			adto.setLine1(a.getLine1());
-			adto.setLine2(a.getLine2());
-			adto.setPincode(a.getPincode());
-			adto.setCityDto(cdto);
-			tdto.setAddress(adto);
-			tdto.setCity(cdto);
-			theaterDtos.add(tdto);
-		}
-		sdto.setTheaters(theaterDtos);
 		return sdto;
 	}
 

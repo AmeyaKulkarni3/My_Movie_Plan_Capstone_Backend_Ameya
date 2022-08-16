@@ -8,12 +8,16 @@ import com.ameya.mymovieplan.dto.CityDto;
 import com.ameya.mymovieplan.dto.GenreDto;
 import com.ameya.mymovieplan.dto.LanguageDto;
 import com.ameya.mymovieplan.dto.MovieDto;
+import com.ameya.mymovieplan.dto.ScheduleDto;
+import com.ameya.mymovieplan.dto.ShowtimeDto;
 import com.ameya.mymovieplan.dto.TheaterDto;
 import com.ameya.mymovieplan.entity.Address;
 import com.ameya.mymovieplan.entity.City;
 import com.ameya.mymovieplan.entity.Genre;
 import com.ameya.mymovieplan.entity.Language;
 import com.ameya.mymovieplan.entity.Movie;
+import com.ameya.mymovieplan.entity.Schedule;
+import com.ameya.mymovieplan.entity.Showtime;
 import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.exception.ExceptionConstants;
 import com.ameya.mymovieplan.exception.city.CityAlreadyExistsException;
@@ -135,8 +139,12 @@ public class CityServiceImpl implements CityService {
 			TheaterDto tdto = new TheaterDto();
 			tdto.setId(t.getId());
 			tdto.setName(t.getName());
-			List<MovieDto> movies = new ArrayList<>();
-			for (Movie m : t.getMovies()) {
+			List<Schedule> schedules = t.getSchedules();
+			List<ScheduleDto> stdtos = new ArrayList<>();
+			for(Schedule s : schedules) {
+				ScheduleDto sdto = new ScheduleDto();
+				Movie m = s.getMovie();
+				Showtime st = s.getShowtime();
 				MovieDto mdto = new MovieDto();
 				mdto.setId(m.getId());
 				mdto.setName(m.getName());
@@ -160,9 +168,15 @@ public class CityServiceImpl implements CityService {
 					languages.add(ldto);
 				}
 				mdto.setLanguages(languages);
-				movies.add(mdto);
+				sdto.setMovie(mdto);
+				ShowtimeDto stdto = new ShowtimeDto();
+				stdto.setId(st.getId());
+				stdto.setTime(st.getTime());
+				sdto.setShowtime(stdto);
+				sdto.setTheater(null);
+				stdtos.add(sdto);
 			}
-			tdto.setMovies(movies);
+			tdto.setSchedules(stdtos);
 			theaters.add(tdto);
 		}
 		dto.setTheatres(theaters);

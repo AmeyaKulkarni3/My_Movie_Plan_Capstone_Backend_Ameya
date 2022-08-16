@@ -37,16 +37,10 @@ public class Theater {
 	@ManyToOne
 	private City city;
 	
-	@ManyToMany(cascade = CascadeType.PERSIST)
-	@JoinTable(name = "theaters_showtimes", joinColumns = @JoinColumn(name = "theaters_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "showtimes_id", referencedColumnName = "id"))
-	private List<Showtime> showtimes;
+	@OneToMany(mappedBy = "theater")
+	private List<Schedule> schedules;
 	
-	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-	@JoinTable(name = "theaters_movies", joinColumns = @JoinColumn(name = "theaters_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "movies_id", referencedColumnName = "id"))
-	private List<Movie> movies;
-	
-	@ManyToMany(cascade = CascadeType.PERSIST)
-	@JoinTable(name = "theaters_tiers", joinColumns = @JoinColumn(name = "theaters_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tiers_id", referencedColumnName = "id"))
+	@OneToMany(cascade = CascadeType.PERSIST)
 	private List<Tier> tiers;
 
 }

@@ -1,6 +1,7 @@
 package com.ameya.mymovieplan.entity;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.JoinColumn;
 
@@ -48,5 +50,8 @@ public class UserEntity {
 			joinColumns = @JoinColumn(name="users_id", referencedColumnName = "id"),
 			inverseJoinColumns = @JoinColumn(name="roles_id", referencedColumnName = "id"))
 	private Collection<RoleEntity> roles;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Booking> bookings;
 
 }

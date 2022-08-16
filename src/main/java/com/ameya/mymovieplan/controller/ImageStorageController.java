@@ -1,13 +1,17 @@
 package com.ameya.mymovieplan.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import com.ameya.mymovieplan.firebase.FirebaseStorageService;
+import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
+import com.ameya.mymovieplan.service.ImageStorageService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,16 +25,21 @@ import org.springframework.web.multipart.MultipartFile;
 public class ImageStorageController {
 	
 	@Autowired
-	FirebaseStorageService firebaseStorageService;
+	ImageStorageService imageStorageService;
 
-	@PostMapping("/add-image")
-	public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) throws IOException{
-		firebaseStorageService.uploadFile(file);
-		return ResponseEntity.ok("Success");
+	@PostMapping("/add-image/{movieId}")
+	public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable int movieId) throws IOException, NoSuchMovieException{
+		
+		return ResponseEntity.ok(imageStorageService.uploadImage(file, movieId));
 	}
 	
-	@GetMapping("/download/{filename:.+}")
-	public ResponseEntity<Object> downloadFile(@PathVariable String filename, HttpServletRequest request) throws IOException{
-		return firebaseStorageService.dowloadFile(filename, request);
+	@GetMapping(value = "/download/{filename}", produces = {MediaType.IMAGE_JPEG_VALUE})
+	public void downloadFile(@PathVariable String filename, HttpServletResponse response) throws IOException{
+		
+		InputStream image = imageStorageService.downloadImage(filename);
+		response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+		
+		
+		StreamUtils.copy(image, response.getOutputStream());
 	}
 }

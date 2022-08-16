@@ -1,5 +1,6 @@
 package com.ameya.mymovieplan.entity;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -7,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -22,9 +23,9 @@ public class Showtime {
 	private int id;
 	
 	@Column(nullable = false)
-	private String time;
+	private LocalTime time;
 	
-	@ManyToMany(mappedBy = "showtimes")
-	private List<Theater> theaters;
+	@OneToMany(mappedBy = "showtime")
+	private List<Schedule> schedules;
 
 }

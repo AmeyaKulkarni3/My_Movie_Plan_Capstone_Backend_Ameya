@@ -8,6 +8,7 @@ import com.ameya.mymovieplan.dto.CityDto;
 import com.ameya.mymovieplan.dto.GenreDto;
 import com.ameya.mymovieplan.dto.LanguageDto;
 import com.ameya.mymovieplan.dto.MovieDto;
+import com.ameya.mymovieplan.dto.ScheduleDto;
 import com.ameya.mymovieplan.dto.ShowtimeDto;
 import com.ameya.mymovieplan.dto.TheaterDto;
 import com.ameya.mymovieplan.entity.Address;
@@ -15,6 +16,7 @@ import com.ameya.mymovieplan.entity.City;
 import com.ameya.mymovieplan.entity.Genre;
 import com.ameya.mymovieplan.entity.Language;
 import com.ameya.mymovieplan.entity.Movie;
+import com.ameya.mymovieplan.entity.Schedule;
 import com.ameya.mymovieplan.entity.Showtime;
 import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.exception.ExceptionConstants;
@@ -85,21 +87,19 @@ public class LanguageServiceImpl implements LanguageService {
 				genreDtos.add(gdto);
 			}
 			mdto.setGenres(genreDtos);
-			List<Theater> theaters = m.getTheaters();
-			List<TheaterDto> theaterDtos = new ArrayList<>();
-			for (Theater t : theaters) {
+			
+			List<Schedule> schedules = m.getSchedules();
+			List<ScheduleDto> sdtos = new ArrayList<>();
+			
+			for(Schedule s : schedules) {
+				ScheduleDto sdto = new ScheduleDto();
+				
+				Theater t = s.getTheater();
+				Showtime st = s.getShowtime();
+				
 				TheaterDto tdto = new TheaterDto();
 				tdto.setId(t.getId());
 				tdto.setName(t.getName());
-				List<Showtime> showtimes = t.getShowtimes();
-				List<ShowtimeDto> showtimeDtos = new ArrayList<>();
-				for (Showtime s : showtimes) {
-					ShowtimeDto sdto = new ShowtimeDto();
-					sdto.setId(s.getId());
-					sdto.setTime(s.getTime());
-					showtimeDtos.add(sdto);
-				}
-				tdto.setShowtimes(showtimeDtos);
 				Address a = t.getAddress();
 				AddressDto adto = new AddressDto();
 				City c = t.getCity();
@@ -112,9 +112,17 @@ public class LanguageServiceImpl implements LanguageService {
 				adto.setPincode(a.getPincode());
 				adto.setCityDto(cdto);
 				tdto.setAddress(adto);
-				theaterDtos.add(tdto);
+				sdto.setTheater(tdto);
+				
+				ShowtimeDto stdto = new ShowtimeDto();
+				stdto.setId(st.getId());
+				stdto.setTime(st.getTime());
+				sdto.setShowtime(stdto);
+				
+				sdtos.add(sdto);
 			}
-			mdto.setTheaters(theaterDtos);
+
+			mdto.setSchedules(sdtos);
 			movieDtos.add(mdto);
 		}
 		dto.setMovies(movieDtos);

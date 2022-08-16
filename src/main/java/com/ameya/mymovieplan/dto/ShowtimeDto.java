@@ -1,5 +1,6 @@
 package com.ameya.mymovieplan.dto;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import lombok.Data;
@@ -8,7 +9,8 @@ import lombok.Data;
 public class ShowtimeDto {
 
 	private int id;
-	private String time;
-	private List<TheaterDto> theaters;
+	private LocalTime time;
+	private List<ScheduleDto> schedules;
+
 
 }

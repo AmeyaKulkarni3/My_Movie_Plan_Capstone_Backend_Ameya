@@ -5,14 +5,26 @@ import java.util.stream.Collectors;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import com.ameya.mymovieplan.exception.booking.BookingAlreadyExistsException;
+import com.ameya.mymovieplan.exception.booking.CantBookTicketException;
+import com.ameya.mymovieplan.exception.booking.NoSuchBookingException;
 import com.ameya.mymovieplan.exception.city.CityAlreadyExistsException;
 import com.ameya.mymovieplan.exception.city.NoSuchCityException;
 import com.ameya.mymovieplan.exception.genre.GenreAlreadyExistsException;
 import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.LanguageAlreadyExistsException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
+import com.ameya.mymovieplan.exception.movie.MovieAlreadyExistsException;
+import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
+import com.ameya.mymovieplan.exception.schedule.CantScheduleShowException;
+import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
+import com.ameya.mymovieplan.exception.schedule.ScheduleAlreadyExistsException;
+import com.ameya.mymovieplan.exception.seat.NoSuchSeatException;
+import com.ameya.mymovieplan.exception.seat.SeatAlreadyExistsException;
 import com.ameya.mymovieplan.exception.showtime.NoSuchShowtimeException;
 import com.ameya.mymovieplan.exception.showtime.ShowtimeAlreadyExistsException;
+import com.ameya.mymovieplan.exception.theater.NoSuchTheaterException;
+import com.ameya.mymovieplan.exception.theater.TheaterAlreadyExistsException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -29,14 +41,14 @@ public class ExceptionControllerAdvice {
 	@Autowired
 	private Environment environment;
 	
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(Exception ex){
-		ErrorMessage error = new ErrorMessage();
-		error.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		error.setMessage(environment.getProperty(ExceptionConstants.GENERAL_EXCEPTION.toString()));
-		return new ResponseEntity<>(error, HttpStatus.OK);
-		
-	}
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(Exception ex){
+//		ErrorMessage error = new ErrorMessage();
+//		error.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+//		error.setMessage(environment.getProperty(ExceptionConstants.GENERAL_EXCEPTION.toString()));
+//		return new ResponseEntity<>(error, HttpStatus.OK);
+//		
+//	}
 	
 	private ErrorMessage generateException(Exception ex) {
 		ErrorMessage error = new ErrorMessage();
@@ -112,6 +124,90 @@ public class ExceptionControllerAdvice {
 	
 	@ExceptionHandler(ShowtimeAlreadyExistsException.class)
 	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(ShowtimeAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(NoSuchMovieException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(NoSuchMovieException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(MovieAlreadyExistsException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(MovieAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(NoSuchTheaterException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(NoSuchTheaterException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(TheaterAlreadyExistsException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(TheaterAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(NoSuchScheduleException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(NoSuchScheduleException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(ScheduleAlreadyExistsException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(ScheduleAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(CantScheduleShowException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(CantScheduleShowException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(NoSuchBookingException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(NoSuchBookingException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(BookingAlreadyExistsException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(BookingAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(CantBookTicketException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(CantBookTicketException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(NoSuchSeatException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(NoSuchSeatException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(SeatAlreadyExistsException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(SeatAlreadyExistsException ex){
 		ErrorMessage error = generateException(ex);
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 		

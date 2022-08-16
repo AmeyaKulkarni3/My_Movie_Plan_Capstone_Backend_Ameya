@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
@@ -28,6 +29,10 @@ public class Address {
 	@ManyToOne
 	private City city;
 	
+	@Column(nullable = false)
 	private String pincode;
+	
+	@OneToOne
+	private Theater theater;
 
 }

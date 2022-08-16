@@ -12,10 +12,9 @@ public class TheaterDto {
 	private int id;
 	private String name;
 	private CityDto city;
-	private List<ShowtimeDto> showtimes;
-	private List<MovieDto> movies;
 	private AddressDto address;
 	private List<TierDto> tiers;
+	private List<ScheduleDto> schedules;
 
 
 }

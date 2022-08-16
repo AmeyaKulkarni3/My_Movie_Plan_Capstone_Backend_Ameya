@@ -14,8 +14,10 @@ public class MovieDto {
 	private String directors;
 	private String cast;
 	private String poster;
-	private List<TheaterDto> theaters;
+	private String duration;
 	private List<GenreDto> genres;
 	private List<LanguageDto> languages;
+	private boolean isActive;
+	private List<ScheduleDto> schedules;
 
 }
