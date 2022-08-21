@@ -40,7 +40,8 @@ public class Theater {
 	@OneToMany(mappedBy = "theater")
 	private List<Schedule> schedules;
 	
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST)
+	@JoinTable(name = "theaters_tiers", joinColumns = @JoinColumn(name = "theaters_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "tiers_id", referencedColumnName = "id"))
 	private List<Tier> tiers;
 
 }

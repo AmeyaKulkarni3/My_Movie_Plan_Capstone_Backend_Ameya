@@ -15,11 +15,13 @@ import com.ameya.mymovieplan.exception.theater.TheaterAlreadyExistsException;
 import com.ameya.mymovieplan.exception.tier.NoSuchTierException;
 import com.ameya.mymovieplan.exception.tier.TierAlreadyExistsException;
 import com.ameya.mymovieplan.model.request.CreateScheduleRequestModel;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 public interface TheaterService {
 
 	TheaterDto addTheater(TheaterDto theater)
-			throws TheaterAlreadyExistsException, TierAlreadyExistsException, ShowtimeAlreadyExistsException, NoSuchMovieException, NoSuchTierException, NoSuchTheaterException;
+			throws TheaterAlreadyExistsException, TierAlreadyExistsException, ShowtimeAlreadyExistsException,
+			NoSuchMovieException, NoSuchTierException, NoSuchTheaterException, NoSuchCityException;
 
 	TheaterDto getTheaterById(int id) throws NoSuchTheaterException;
 
@@ -27,6 +29,6 @@ public interface TheaterService {
 
 	TheaterDto updateTheater(TheaterDto theaterDto) throws NoSuchTheaterException;
 
-	String deleteTheater(int id) throws NoSuchTheaterException;
+	OutputMessage deleteTheater(int id) throws NoSuchTheaterException;
 
 }

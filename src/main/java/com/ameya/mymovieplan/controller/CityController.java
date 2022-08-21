@@ -6,6 +6,7 @@ import com.ameya.mymovieplan.dto.CityDto;
 import com.ameya.mymovieplan.exception.city.CityAlreadyExistsException;
 import com.ameya.mymovieplan.exception.city.NoSuchCityException;
 import com.ameya.mymovieplan.service.CityService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class CityController {
 	
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteCity(@PathVariable int id) throws NoSuchCityException{
+	public ResponseEntity<OutputMessage> deleteCity(@PathVariable int id) throws NoSuchCityException{
 		return ResponseEntity.ok(cityService.deleteCity(id));
 	}
 	

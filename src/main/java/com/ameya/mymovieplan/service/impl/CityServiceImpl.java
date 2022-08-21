@@ -22,8 +22,12 @@ import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.exception.ExceptionConstants;
 import com.ameya.mymovieplan.exception.city.CityAlreadyExistsException;
 import com.ameya.mymovieplan.exception.city.NoSuchCityException;
+import com.ameya.mymovieplan.repository.AddressRepository;
 import com.ameya.mymovieplan.repository.CityRepository;
+import com.ameya.mymovieplan.repository.TheaterRepository;
 import com.ameya.mymovieplan.service.CityService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -38,6 +42,12 @@ public class CityServiceImpl implements CityService {
 
 	@Autowired
 	CityRepository cityRepository;
+	
+	@Autowired
+	AddressRepository addressRepository;
+	
+	@Autowired
+	TheaterRepository theaterRepository;
 
 	@Autowired
 	Environment env;
@@ -106,14 +116,28 @@ public class CityServiceImpl implements CityService {
 	}
 	
 	@Override
-	public String deleteCity(int id) throws NoSuchCityException {
+	public OutputMessage deleteCity(int id) throws NoSuchCityException {
 		
 		City c = cityRepository.findById(id).orElseThrow(
 				() -> new NoSuchCityException(env.getProperty(ExceptionConstants.CITY_NOT_FOUND.toString())));
 		
+		List<Theater> theaters = c.getTheatres();
+		List<Address> addresses = c.getAddresses();
+		
+		for(Address a : addresses) {
+			addressRepository.delete(a);
+		}
+		
+		for(Theater t : theaters) {
+			theaterRepository.delete(t);
+		}
+		
 		cityRepository.delete(c);
 		
-		return "City Deleted Successfully";
+		OutputMessage message = new OutputMessage();
+		message.setMessage(env.getProperty(CrudMessage.CITY_DELETE_SUCCESS.toString()));
+		
+		return message;
 	}
 
 	private CityDto dataTransfer(City c) {

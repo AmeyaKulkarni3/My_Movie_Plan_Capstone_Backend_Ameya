@@ -9,5 +9,6 @@ public interface UserService extends UserDetailsService{
 	
 	public UserDto createUser(UserDto user) throws UserAlreadyExistsException;
 	public UserDto getUser(String email);
+	public UserDto getUserById(String userId);
 
 }

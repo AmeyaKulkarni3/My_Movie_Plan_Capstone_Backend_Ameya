@@ -1,6 +1,7 @@
 package com.ameya.mymovieplan.dto;
 
 import java.util.Collection;
+import java.util.List;
 
 import lombok.Data;
 
@@ -15,5 +16,6 @@ public class UserDto {
 	private String phone;
 	private String password;
 	private Collection<String> roles;
+	private List<BookingDto> bookings;
 
 }

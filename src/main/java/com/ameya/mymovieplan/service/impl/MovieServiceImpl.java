@@ -223,8 +223,10 @@ public class MovieServiceImpl implements MovieService {
 		List<Movie> movies = (List<Movie>) movieRepository.findAll();
 		List<MovieDto> movieDtos = new ArrayList<>();
 		for (Movie m : movies) {
-			MovieDto mdto = dataTransfer(m);
-			movieDtos.add(mdto);
+			if(m.isActive()) {
+				MovieDto mdto = dataTransfer(m);
+				movieDtos.add(mdto);
+			}
 		}
 		return movieDtos;
 	}
@@ -250,6 +252,9 @@ public class MovieServiceImpl implements MovieService {
 		}
 		if (dto.getPoster() != null && !dto.getPoster().equals(movie.getPoster())) {
 			movie.setPoster(dto.getPoster());
+		}
+		if(dto.isActive() != movie.isActive()) {
+			movie.setActive(dto.isActive());
 		}
 
 		Movie saved = movieRepository.save(movie);

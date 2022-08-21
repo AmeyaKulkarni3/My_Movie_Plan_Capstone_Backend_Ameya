@@ -24,6 +24,7 @@ import com.ameya.mymovieplan.entity.Showtime;
 import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.entity.Tier;
 import com.ameya.mymovieplan.exception.ExceptionConstants;
+import com.ameya.mymovieplan.exception.city.NoSuchCityException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
 import com.ameya.mymovieplan.exception.showtime.NoSuchShowtimeException;
 import com.ameya.mymovieplan.exception.showtime.ShowtimeAlreadyExistsException;
@@ -42,6 +43,8 @@ import com.ameya.mymovieplan.service.MovieService;
 import com.ameya.mymovieplan.service.ShowtimeService;
 import com.ameya.mymovieplan.service.TheaterService;
 import com.ameya.mymovieplan.service.TierService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -86,7 +89,7 @@ public class TheaterServiceImpl implements TheaterService {
 
 	@Override
 	public TheaterDto addTheater(TheaterDto theater) throws TheaterAlreadyExistsException, TierAlreadyExistsException,
-			ShowtimeAlreadyExistsException, NoSuchMovieException, NoSuchTierException, NoSuchTheaterException {
+			ShowtimeAlreadyExistsException, NoSuchMovieException, NoSuchTierException, NoSuchTheaterException, NoSuchCityException {
 
 		Theater saved = theaterRepository.findByName(theater.getName());
 
@@ -98,7 +101,7 @@ public class TheaterServiceImpl implements TheaterService {
 		Theater t = new Theater();
 		t.setName(theater.getName());
 
-		City c = cityRepository.findByName(theater.getCity().getName());
+		City c = cityRepository.findById(theater.getCity().getId()).orElseThrow(() -> new NoSuchCityException(env.getProperty(ExceptionConstants.CITY_NOT_FOUND.toString())));
 
 		t.setCity(c);
 
@@ -150,7 +153,9 @@ public class TheaterServiceImpl implements TheaterService {
 		
 		List<Tier> savedTiers = savedTheater.getTiers();
 		for(Tier ti : savedTiers) {
-			ti.setTheater(savedTheater);
+			List<Theater> theaters = ti.getTheaters();
+			theaters.add(savedTheater);
+			ti.setTheaters(theaters);
 			tierRepository.save(ti);
 		}
 		
@@ -277,11 +282,13 @@ public class TheaterServiceImpl implements TheaterService {
 	}
 
 	@Override
-	public String deleteTheater(int id) throws NoSuchTheaterException {
+	public OutputMessage deleteTheater(int id) throws NoSuchTheaterException {
 		Theater theater = theaterRepository.findById(id).orElseThrow(
 				() -> new NoSuchTheaterException(env.getProperty(ExceptionConstants.THEATER_NOT_FOUND.toString())));
 		theaterRepository.delete(theater);
-		return "Theater deleted Successfully!";
+		OutputMessage message = new OutputMessage();
+		message.setMessage(env.getProperty(CrudMessage.THEATER_DELETE_SUCCESS.toString()));
+		return message;
 	}
 
 }

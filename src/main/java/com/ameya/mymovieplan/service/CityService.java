@@ -5,6 +5,7 @@ import java.util.List;
 import com.ameya.mymovieplan.dto.CityDto;
 import com.ameya.mymovieplan.exception.city.CityAlreadyExistsException;
 import com.ameya.mymovieplan.exception.city.NoSuchCityException;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 public interface CityService {
 	
@@ -16,6 +17,6 @@ public interface CityService {
 
 	CityDto updateCity(CityDto cityDto) throws NoSuchCityException;
 
-	String deleteCity(int id) throws NoSuchCityException;
+	OutputMessage deleteCity(int id) throws NoSuchCityException;
 
 }
