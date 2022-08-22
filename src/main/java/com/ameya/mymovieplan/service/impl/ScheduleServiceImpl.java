@@ -1,13 +1,10 @@
 package com.ameya.mymovieplan.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import com.ameya.mymovieplan.dto.AddressDto;
@@ -31,6 +28,7 @@ import com.ameya.mymovieplan.entity.Showtime;
 import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.entity.Tier;
 import com.ameya.mymovieplan.exception.ExceptionConstants;
+import com.ameya.mymovieplan.exception.movie.MovieNotActiveException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
 import com.ameya.mymovieplan.exception.schedule.CantScheduleShowException;
 import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
@@ -44,6 +42,8 @@ import com.ameya.mymovieplan.repository.SeatRepository;
 import com.ameya.mymovieplan.repository.ShowtimeRepository;
 import com.ameya.mymovieplan.repository.TheaterRepository;
 import com.ameya.mymovieplan.service.ScheduleService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -76,7 +76,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 	@Override
 	public ScheduleDto createSchedule(int movieId, int theaterId, int showtimeId, LocalDate date) throws ScheduleAlreadyExistsException,
-			NoSuchMovieException, NoSuchTheaterException, NoSuchShowtimeException, CantScheduleShowException {
+			NoSuchMovieException, NoSuchTheaterException, NoSuchShowtimeException, CantScheduleShowException, MovieNotActiveException {
 
 		Schedule savedSchedule = scheduleRepository.findExistingSchedule(movieId, theaterId, showtimeId);
 		if (savedSchedule != null) {
@@ -89,6 +89,10 @@ public class ScheduleServiceImpl implements ScheduleService {
 				() -> new NoSuchTheaterException(env.getProperty(ExceptionConstants.THEATER_NOT_FOUND.toString())));
 		Showtime showtime = showtimeRepository.findById(showtimeId).orElseThrow(
 				() -> new NoSuchShowtimeException(env.getProperty(ExceptionConstants.SHOWTIME_NOT_FOUND.toString())));
+		
+		if(!movie.isActive()) {
+			throw new MovieNotActiveException(env.getProperty(ExceptionConstants.MOVIE_NOT_ACTIVE.toString()));
+		}
 
 		List<Schedule> movieSchedules = theater.getSchedules();
 
@@ -326,7 +330,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	}
 
 	@Override
-	public String deleteSchedule(int id) throws NoSuchScheduleException {
+	public OutputMessage deleteSchedule(int id) throws NoSuchScheduleException {
 		Schedule schedule = scheduleRepository.findById(id).orElseThrow(
 				() -> new NoSuchScheduleException(env.getProperty(ExceptionConstants.SCHEDULE_NOT_FOUND.toString())));
 		List<Seat> seats = seatRepository.findBySchedule(id);
@@ -334,7 +338,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 			seatRepository.delete(s);
 		}
 		scheduleRepository.delete(schedule);
-		return "Schedule Deleted Successfully!";
+		
+		OutputMessage om = new OutputMessage();
+		om.setMessage(env.getProperty(CrudMessage.SCHEDULE_DELETE_SUCCESS.toString()));
+		
+		return om;
 	}
 
 }

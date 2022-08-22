@@ -37,7 +37,8 @@ public enum ExceptionConstants {
 	BOOKING_NOT_FOUND("booking.not.found"),
 	BOOKING_NOT_POSSIBLE("booking.not.possible"),
 	SEAT_ALREADY_EXISTS("seat.already.exists"),
-	SEAT_NOT_FOUND("seat.not.found");
+	SEAT_NOT_FOUND("seat.not.found"),
+	MOVIE_NOT_ACTIVE("movie.not.active");
 	
 	private final String type;
 

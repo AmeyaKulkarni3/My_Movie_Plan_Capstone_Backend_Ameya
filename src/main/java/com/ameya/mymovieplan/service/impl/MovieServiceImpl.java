@@ -28,11 +28,15 @@ import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.exception.movie.MovieAlreadyExistsException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
+import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
 import com.ameya.mymovieplan.repository.GenreRepository;
 import com.ameya.mymovieplan.repository.LanguageRepository;
 import com.ameya.mymovieplan.repository.MovieRepository;
 import com.ameya.mymovieplan.service.ImageStorageService;
 import com.ameya.mymovieplan.service.MovieService;
+import com.ameya.mymovieplan.service.ScheduleService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -56,6 +60,9 @@ public class MovieServiceImpl implements MovieService {
 
 	@Autowired
 	ImageStorageService imageStorageService;
+
+	@Autowired
+	ScheduleService scheduleService;
 
 	@Autowired
 	Environment env;
@@ -102,7 +109,7 @@ public class MovieServiceImpl implements MovieService {
 		} else {
 			movie.setActive(false);
 		}
-		
+
 		movie.setSchedules(new ArrayList<Schedule>());
 
 //		List<Genre> gens = movie.getGenres();
@@ -157,16 +164,16 @@ public class MovieServiceImpl implements MovieService {
 		}
 		dto.setGenres(gdtos);
 		dto.setLanguages(ldtos);
-		
+
 		List<Schedule> schedules = movie.getSchedules();
 		List<ScheduleDto> sdtos = new ArrayList<>();
-		for(Schedule s : schedules) {
+		for (Schedule s : schedules) {
 			ScheduleDto sdto = new ScheduleDto();
 			sdto.setId(s.getId());
-			
+
 			Theater t = s.getTheater();
 			Showtime st = s.getShowtime();
-			
+
 			TheaterDto tdto = new TheaterDto();
 			tdto.setId(t.getId());
 			Address a = t.getAddress();
@@ -175,7 +182,7 @@ public class MovieServiceImpl implements MovieService {
 			cdto.setId(c.getId());
 			cdto.setName(c.getName());
 			tdto.setCity(cdto);
-			AddressDto adto =  new AddressDto();
+			AddressDto adto = new AddressDto();
 			adto.setCityDto(cdto);
 			adto.setId(a.getId());
 			adto.setLine1(a.getLine1());
@@ -184,7 +191,7 @@ public class MovieServiceImpl implements MovieService {
 			tdto.setAddress(adto);
 			List<Tier> tiers = t.getTiers();
 			List<TierDto> tierDtos = new ArrayList<>();
-			for(Tier tier : tiers) {
+			for (Tier tier : tiers) {
 				TierDto tierDto = new TierDto();
 				tierDto.setId(tier.getId());
 				tierDto.setName(tier.getName());
@@ -198,7 +205,7 @@ public class MovieServiceImpl implements MovieService {
 			}
 			tdto.setTiers(tierDtos);
 			sdto.setTheater(tdto);
-			
+
 			ShowtimeDto stdto = new ShowtimeDto();
 			stdto.setId(st.getId());
 			stdto.setTime(st.getTime());
@@ -223,12 +230,25 @@ public class MovieServiceImpl implements MovieService {
 		List<Movie> movies = (List<Movie>) movieRepository.findAll();
 		List<MovieDto> movieDtos = new ArrayList<>();
 		for (Movie m : movies) {
-			if(m.isActive()) {
+			if (m.isActive()) {
 				MovieDto mdto = dataTransfer(m);
 				movieDtos.add(mdto);
 			}
 		}
 		return movieDtos;
+	}
+
+	@Override
+	public List<MovieDto> getAllMoviesAdmin() {
+
+		List<Movie> movies = (List<Movie>) movieRepository.findAll();
+		List<MovieDto> movieDtos = new ArrayList<>();
+		for (Movie m : movies) {
+			MovieDto mdto = dataTransfer(m);
+			movieDtos.add(mdto);
+		}
+		return movieDtos;
+
 	}
 
 	@Override
@@ -253,20 +273,23 @@ public class MovieServiceImpl implements MovieService {
 		if (dto.getPoster() != null && !dto.getPoster().equals(movie.getPoster())) {
 			movie.setPoster(dto.getPoster());
 		}
-		if(dto.isActive() != movie.isActive()) {
-			movie.setActive(dto.isActive());
-		}
-
 		Movie saved = movieRepository.save(movie);
 
 		return dataTransfer(saved);
 	}
 
 	@Override
-	public String deleteMovie(int id) throws NoSuchMovieException {
+	public OutputMessage deleteMovie(int id) throws NoSuchMovieException, NoSuchScheduleException {
 
 		Movie movie = movieRepository.findById(id).orElseThrow(
 				() -> new NoSuchMovieException(env.getProperty(ExceptionConstants.MOVIE_NOT_FOUND.toString())));
+
+		List<Schedule> schedules = movie.getSchedules();
+		if (schedules != null) {
+			for (Schedule s : schedules) {
+				OutputMessage o = scheduleService.deleteSchedule(s.getId());
+			}
+		}
 
 		movieRepository.delete(movie);
 
@@ -274,7 +297,29 @@ public class MovieServiceImpl implements MovieService {
 
 		imageStorageService.deleteImage(fileName);
 
-		return "Movie Deleted Successfully!!";
+		OutputMessage om = new OutputMessage();
+		om.setMessage(env.getProperty(CrudMessage.MOVIE_DELETE_SUCCESS.toString()));
+
+		return om;
+	}
+
+	@Override
+	public MovieDto updateStatus(int id) throws NoSuchMovieException, NoSuchScheduleException {
+		Movie movie = movieRepository.findById(id).orElseThrow(
+				() -> new NoSuchMovieException(env.getProperty(ExceptionConstants.MOVIE_NOT_FOUND.toString())));
+		movie.setActive(!movie.isActive());
+		if (!movie.isActive()) {
+			List<Schedule> schedules = movie.getSchedules();
+			if (schedules != null) {
+				for (Schedule s : schedules) {
+					OutputMessage om = scheduleService.deleteSchedule(s.getId());
+				}
+			}
+			movie.setSchedules(new ArrayList<>());
+		}
+		Movie saved = movieRepository.save(movie);
+		MovieDto returnValue = dataTransfer(saved);
+		return returnValue;
 	}
 
 }

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
 import com.ameya.mymovieplan.service.ImageStorageService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class ImageStorageController {
 	ImageStorageService imageStorageService;
 
 	@PostMapping("/add-image/{movieId}")
-	public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable int movieId) throws IOException, NoSuchMovieException{
+	public ResponseEntity<OutputMessage> uploadImage(@RequestParam("file") MultipartFile file, @PathVariable int movieId) throws IOException, NoSuchMovieException{
 		
 		return ResponseEntity.ok(imageStorageService.uploadImage(file, movieId));
 	}

@@ -8,7 +8,9 @@ import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.exception.movie.MovieAlreadyExistsException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
+import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
 import com.ameya.mymovieplan.service.MovieService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,11 @@ public class MovieController {
 		return ResponseEntity.ok(movieService.getAllMovies());
 	}
 	
+	@GetMapping("/admin")
+	public ResponseEntity<List<MovieDto>> getAllMoviesAdmin(){
+		return ResponseEntity.ok(movieService.getAllMoviesAdmin());
+	}
+	
 	@Secured("ROLE_ADMIN")
 	@PutMapping
 	public ResponseEntity<MovieDto> updateMovie(@RequestBody MovieDto dto) throws NoSuchMovieException{
@@ -56,8 +63,14 @@ public class MovieController {
 	
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteMovie(@PathVariable int id) throws NoSuchMovieException{
+	public ResponseEntity<OutputMessage> deleteMovie(@PathVariable int id) throws NoSuchMovieException, NoSuchScheduleException{
 		return ResponseEntity.ok(movieService.deleteMovie(id));
+	}
+	
+	@Secured("ROLE_ADMIN")
+	@PutMapping("/change-status/{id}")
+	public ResponseEntity<MovieDto> updateStatus(@PathVariable int id) throws NoSuchMovieException, NoSuchScheduleException{
+		return ResponseEntity.ok(movieService.updateStatus(id));
 	}
 
 }

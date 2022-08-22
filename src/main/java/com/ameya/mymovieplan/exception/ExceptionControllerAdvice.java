@@ -15,6 +15,7 @@ import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.LanguageAlreadyExistsException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.exception.movie.MovieAlreadyExistsException;
+import com.ameya.mymovieplan.exception.movie.MovieNotActiveException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
 import com.ameya.mymovieplan.exception.schedule.CantScheduleShowException;
 import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
@@ -41,14 +42,14 @@ public class ExceptionControllerAdvice {
 	@Autowired
 	private Environment environment;
 	
-//	@ExceptionHandler(Exception.class)
-//	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(Exception ex){
-//		ErrorMessage error = new ErrorMessage();
-//		error.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-//		error.setMessage(environment.getProperty(ExceptionConstants.GENERAL_EXCEPTION.toString()));
-//		return new ResponseEntity<>(error, HttpStatus.OK);
-//		
-//	}
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(Exception ex){
+		ErrorMessage error = new ErrorMessage();
+		error.setErrorCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		error.setMessage(environment.getProperty(ExceptionConstants.GENERAL_EXCEPTION.toString()));
+		return new ResponseEntity<>(error, HttpStatus.OK);
+		
+	}
 	
 	private ErrorMessage generateException(Exception ex) {
 		ErrorMessage error = new ErrorMessage();
@@ -208,6 +209,13 @@ public class ExceptionControllerAdvice {
 	
 	@ExceptionHandler(SeatAlreadyExistsException.class)
 	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(SeatAlreadyExistsException ex){
+		ErrorMessage error = generateException(ex);
+		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(MovieNotActiveException.class)
+	public ResponseEntity<ErrorMessage> exceptionHandlerCustom(MovieNotActiveException ex){
 		ErrorMessage error = generateException(ex);
 		return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
 		

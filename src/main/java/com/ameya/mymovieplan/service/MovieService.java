@@ -8,6 +8,8 @@ import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.exception.movie.MovieAlreadyExistsException;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
+import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +24,10 @@ public interface MovieService {
 
 	MovieDto updateMovie(MovieDto dto) throws NoSuchMovieException;
 
-	String deleteMovie(int id) throws NoSuchMovieException;
+	OutputMessage deleteMovie(int id) throws NoSuchMovieException, NoSuchScheduleException;
+
+	MovieDto updateStatus(int id) throws NoSuchMovieException, NoSuchScheduleException;
+
+	List<MovieDto> getAllMoviesAdmin();
 
 }

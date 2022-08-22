@@ -13,6 +13,7 @@ import com.ameya.mymovieplan.exception.ExceptionConstants;
 import com.ameya.mymovieplan.exception.movie.NoSuchMovieException;
 import com.ameya.mymovieplan.repository.MovieRepository;
 import com.ameya.mymovieplan.service.ImageStorageService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 import com.ameya.mymovieplan.utils.UserIdGenerator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 	UserIdGenerator uidgen;
 
 	@Override
-	public String uploadImage(MultipartFile imageFile, int movieId) throws IOException, NoSuchMovieException {
+	public OutputMessage uploadImage(MultipartFile imageFile, int movieId) throws IOException, NoSuchMovieException {
 		
 		String path = env.getProperty("project.image");
 		
@@ -57,7 +58,10 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 		
 		movieRepository.save(movie);
 		
-		return "Image added successfully!";
+		OutputMessage outputMessage = new OutputMessage();
+		outputMessage.setMessage(filePath);
+		
+		return outputMessage;
 	}
 
 	@Override
