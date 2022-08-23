@@ -24,6 +24,8 @@ import com.ameya.mymovieplan.exception.genre.GenreAlreadyExistsException;
 import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.repository.GenreRepository;
 import com.ameya.mymovieplan.service.GenreService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -173,14 +175,17 @@ public class GenreServiceImpl implements GenreService {
 	}
 
 	@Override
-	public String deleteGenre(int id) throws NoSuchGenreException {
+	public OutputMessage deleteGenre(int id) throws NoSuchGenreException {
 		
 		Genre genre = genreRepository.findById(id).orElseThrow(
 				() -> new NoSuchGenreException(env.getProperty(ExceptionConstants.GENRE_NOT_FOUND.toString())));
 		
 		genreRepository.delete(genre);
 		
-		return "Genre Deleted Successfully!";
+		OutputMessage om = new OutputMessage();
+		om.setMessage(env.getProperty(CrudMessage.GENRE_DELETE_SUCCESS.toString()));
+		
+		return om;
 	}
 
 }

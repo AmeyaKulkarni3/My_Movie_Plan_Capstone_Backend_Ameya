@@ -5,6 +5,7 @@ import java.util.List;
 import com.ameya.mymovieplan.dto.GenreDto;
 import com.ameya.mymovieplan.exception.genre.GenreAlreadyExistsException;
 import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 public interface GenreService {
 	
@@ -16,6 +17,6 @@ public interface GenreService {
 	
 	GenreDto updateGenre(GenreDto dto) throws NoSuchGenreException;
 	
-	String deleteGenre(int id) throws NoSuchGenreException;
+	OutputMessage deleteGenre(int id) throws NoSuchGenreException;
 
 }

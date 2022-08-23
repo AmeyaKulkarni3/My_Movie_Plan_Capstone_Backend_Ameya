@@ -75,7 +75,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	Environment env;
 
 	@Override
-	public ScheduleDto createSchedule(int movieId, int theaterId, int showtimeId, LocalDate date) throws ScheduleAlreadyExistsException,
+	public List<ScheduleDto> createSchedule(int movieId, int theaterId, int showtimeId, LocalDate date, LocalDate toDate) throws ScheduleAlreadyExistsException,
 			NoSuchMovieException, NoSuchTheaterException, NoSuchShowtimeException, CantScheduleShowException, MovieNotActiveException {
 
 		Schedule savedSchedule = scheduleRepository.findExistingSchedule(movieId, theaterId, showtimeId);
@@ -126,15 +126,36 @@ public class ScheduleServiceImpl implements ScheduleService {
 						env.getProperty(ExceptionConstants.SCHEDULE_NOT_POSSIBLE.toString()) + " " + newTime.toString());
 			}
 		}
+		
+		List<ScheduleDto> sdtos = new ArrayList<>();
+		
+		
+		if(toDate != null) {
+			LocalDate endDate = toDate.plusDays(1);
+			for(LocalDate d = date; d.isBefore(endDate); d = d.plusDays(1)) {
+				ScheduleDto dto = dataTransfer(createScheduleForTheDate(movie, theater, showtime, d));
+				sdtos.add(dto);
+			}
+		} else {
 
+			ScheduleDto dto = dataTransfer(createScheduleForTheDate(movie, theater, showtime, date));
+			
+			sdtos.add(dto);
+
+		}
+		
+		return sdtos;
+	}
+	
+	private Schedule createScheduleForTheDate(Movie movie, Theater theater, Showtime showtime, LocalDate d) {
+		
 		Schedule schedule = new Schedule();
 		schedule.setMovie(movie);
 		schedule.setTheater(theater);
 		schedule.setShowtime(showtime);
-		schedule.setDate(date);
-
+		schedule.setDate(d);
+		
 		Schedule saved = scheduleRepository.save(schedule);
-
 		List<Seat> seats = new ArrayList<>();
 		List<Tier> tiers = theater.getTiers();
 		Collections.sort(tiers);
@@ -156,11 +177,8 @@ public class ScheduleServiceImpl implements ScheduleService {
 
 		saved.setSeats(seats);
 
-		scheduleRepository.save(saved);
-
-		ScheduleDto dto = dataTransfer(saved);
-
-		return dto;
+		return saved;
+		
 	}
 
 	private ScheduleDto dataTransfer(Schedule s) {
@@ -260,6 +278,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 			sdtos.add(sdto);
 		}
 		dto.setSeats(sdtos);
+		dto.setDate(s.getDate());
 
 		return dto;
 	}
@@ -333,7 +352,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 	public OutputMessage deleteSchedule(int id) throws NoSuchScheduleException {
 		Schedule schedule = scheduleRepository.findById(id).orElseThrow(
 				() -> new NoSuchScheduleException(env.getProperty(ExceptionConstants.SCHEDULE_NOT_FOUND.toString())));
-		List<Seat> seats = seatRepository.findBySchedule(id);
+		List<Seat> seats = schedule.getSeats();
 		for(Seat s : seats) {
 			seatRepository.delete(s);
 		}
@@ -343,6 +362,17 @@ public class ScheduleServiceImpl implements ScheduleService {
 		om.setMessage(env.getProperty(CrudMessage.SCHEDULE_DELETE_SUCCESS.toString()));
 		
 		return om;
+	}
+
+	@Override
+	public List<ScheduleDto> getAllSChedules() {
+		List<Schedule> schedules = (List<Schedule>) scheduleRepository.findAll();
+		List<ScheduleDto> sdtos = new ArrayList<>();
+		for(Schedule s : schedules) {
+			ScheduleDto sdto = dataTransfer(s);
+			sdtos.add(sdto);	
+		}
+		return sdtos;
 	}
 
 }

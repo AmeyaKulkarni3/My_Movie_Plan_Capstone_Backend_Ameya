@@ -8,6 +8,7 @@ import com.ameya.mymovieplan.exception.genre.GenreAlreadyExistsException;
 import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.exception.language.LanguageAlreadyExistsException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 public interface LanguageService {
 	
@@ -19,6 +20,6 @@ public interface LanguageService {
 	
 	LanguageDto updateLanguage(LanguageDto dto) throws NoSuchLanguageException;
 	
-	String deleteLanguage(int id) throws NoSuchLanguageException;
+	OutputMessage deleteLanguage(int id) throws NoSuchLanguageException;
 
 }

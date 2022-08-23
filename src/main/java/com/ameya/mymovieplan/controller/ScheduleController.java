@@ -34,11 +34,16 @@ public class ScheduleController {
 	ScheduleService scheduleService;
 
 	@PostMapping
-	public ResponseEntity<ScheduleDto> createSchedule(@RequestBody CreateScheduleRequestModel createSchedule)
+	public ResponseEntity<List<ScheduleDto>> createSchedule(@RequestBody CreateScheduleRequestModel createSchedule)
 			throws ScheduleAlreadyExistsException, NoSuchMovieException, NoSuchTheaterException,
 			NoSuchShowtimeException, CantScheduleShowException, MovieNotActiveException {
 		return ResponseEntity.ok(scheduleService.createSchedule(createSchedule.getMovieId(),
-				createSchedule.getTheaterId(), createSchedule.getShowtimeId(), createSchedule.getDate()));
+				createSchedule.getTheaterId(), createSchedule.getShowtimeId(), createSchedule.getDate(), createSchedule.getToDate()));
+	}
+	
+	@GetMapping
+	public ResponseEntity<List<ScheduleDto>> getAllSchedules(){
+		return ResponseEntity.ok(scheduleService.getAllSChedules());
 	}
 
 	@GetMapping("/{id}")

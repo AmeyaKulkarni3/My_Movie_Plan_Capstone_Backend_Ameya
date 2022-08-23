@@ -16,7 +16,7 @@ import com.ameya.mymovieplan.utils.OutputMessage;
 
 public interface ScheduleService {
 
-	ScheduleDto createSchedule(int movieId, int theaterId, int showtimeId, LocalDate date) throws ScheduleAlreadyExistsException,
+	List<ScheduleDto> createSchedule(int movieId, int theaterId, int showtimeId, LocalDate date, LocalDate toDate) throws ScheduleAlreadyExistsException,
 			NoSuchMovieException, NoSuchTheaterException, NoSuchShowtimeException, CantScheduleShowException, MovieNotActiveException;
 
 	ScheduleDto getScheduleById(int id) throws NoSuchScheduleException;
@@ -31,6 +31,8 @@ public interface ScheduleService {
 			throws NoSuchScheduleException, NoSuchMovieException, NoSuchShowtimeException, NoSuchTheaterException;
 	
 	OutputMessage deleteSchedule(int id) throws NoSuchScheduleException;
+
+	List<ScheduleDto> getAllSChedules();
 	
 
 }

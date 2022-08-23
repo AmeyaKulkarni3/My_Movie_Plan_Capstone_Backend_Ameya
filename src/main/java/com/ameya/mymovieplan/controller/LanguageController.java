@@ -10,6 +10,7 @@ import com.ameya.mymovieplan.exception.language.LanguageAlreadyExistsException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.service.GenreService;
 import com.ameya.mymovieplan.service.LanguageService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class LanguageController {
 
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteLanguage(@PathVariable int id) throws NoSuchLanguageException{
+	public ResponseEntity<OutputMessage> deleteLanguage(@PathVariable int id) throws NoSuchLanguageException{
 		return ResponseEntity.ok(languageService.deleteLanguage(id));
 	}
 

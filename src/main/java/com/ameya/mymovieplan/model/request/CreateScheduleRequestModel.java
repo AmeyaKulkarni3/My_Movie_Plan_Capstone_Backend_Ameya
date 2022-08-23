@@ -11,5 +11,6 @@ public class CreateScheduleRequestModel {
 	private int movieId;
 	private int showtimeId;
 	private LocalDate date;
+	private LocalDate toDate;
 
 }

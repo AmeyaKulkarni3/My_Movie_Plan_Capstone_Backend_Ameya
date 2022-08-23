@@ -24,6 +24,8 @@ import com.ameya.mymovieplan.exception.language.LanguageAlreadyExistsException;
 import com.ameya.mymovieplan.exception.language.NoSuchLanguageException;
 import com.ameya.mymovieplan.repository.LanguageRepository;
 import com.ameya.mymovieplan.service.LanguageService;
+import com.ameya.mymovieplan.utils.CrudMessage;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -165,11 +167,15 @@ public class LanguageServiceImpl implements LanguageService {
 	}
 
 	@Override
-	public String deleteLanguage(int id) throws NoSuchLanguageException {
+	public OutputMessage deleteLanguage(int id) throws NoSuchLanguageException {
 		Language language = languageRepository.findById(id).orElseThrow(
 				() -> new NoSuchLanguageException(env.getProperty(ExceptionConstants.LANGUAGE_NOT_FOUND.toString())));
 		languageRepository.delete(language);
-		return "Language Deleted Successfully!";
+		
+		OutputMessage om = new OutputMessage();
+		om.setMessage(env.getProperty(CrudMessage.LANGUAGE_DELETE_SUCCESS.toString()));
+		
+		return om;
 	}
 
 }

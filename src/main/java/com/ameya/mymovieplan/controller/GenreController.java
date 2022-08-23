@@ -6,6 +6,7 @@ import com.ameya.mymovieplan.dto.GenreDto;
 import com.ameya.mymovieplan.exception.genre.GenreAlreadyExistsException;
 import com.ameya.mymovieplan.exception.genre.NoSuchGenreException;
 import com.ameya.mymovieplan.service.GenreService;
+import com.ameya.mymovieplan.utils.OutputMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class GenreController {
 
 	@Secured("ROLE_ADMIN")
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteGenre(@PathVariable int id) throws NoSuchGenreException {
+	public ResponseEntity<OutputMessage> deleteGenre(@PathVariable int id) throws NoSuchGenreException {
 		return ResponseEntity.ok(genreService.deleteGenre(id));
 	}
 
