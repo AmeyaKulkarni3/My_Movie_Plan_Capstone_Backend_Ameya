@@ -11,6 +11,7 @@ import com.ameya.mymovieplan.dto.GenreDto;
 import com.ameya.mymovieplan.dto.LanguageDto;
 import com.ameya.mymovieplan.dto.MovieDto;
 import com.ameya.mymovieplan.dto.ScheduleDto;
+import com.ameya.mymovieplan.dto.SeatDto;
 import com.ameya.mymovieplan.dto.ShowtimeDto;
 import com.ameya.mymovieplan.dto.TheaterDto;
 import com.ameya.mymovieplan.dto.TierDto;
@@ -20,6 +21,7 @@ import com.ameya.mymovieplan.entity.Genre;
 import com.ameya.mymovieplan.entity.Language;
 import com.ameya.mymovieplan.entity.Movie;
 import com.ameya.mymovieplan.entity.Schedule;
+import com.ameya.mymovieplan.entity.Seat;
 import com.ameya.mymovieplan.entity.Showtime;
 import com.ameya.mymovieplan.entity.Theater;
 import com.ameya.mymovieplan.entity.Tier;
@@ -240,6 +242,29 @@ public class TheaterServiceImpl implements TheaterService {
 			stdto.setTime(st.getTime());
 
 			sdto.setShowtime(stdto);
+			
+			List<Seat> seats = s.getSeats();
+			List<SeatDto> seatDtos = new ArrayList<>();
+			for(Seat seat : seats) {
+				SeatDto seatDto = new SeatDto();
+				seatDto.setId(seat.getId());
+				seatDto.setBooked(seat.isBooked());
+				seatDto.setSeatNumber(seat.getSeatNumber());
+				Tier tr = seat.getTier();
+				TierDto trDto = new TierDto();
+				trDto.setId(tr.getId());
+				trDto.setName(tr.getName());
+				trDto.setRows(tr.getRows());
+				trDto.setCols(tr.getCols());
+				trDto.setPrice(tr.getPrice());
+				trDto.setPriority(tr.getPriority());
+				trDto.setSeatsBooked(tr.getSeatsBooked());
+				trDto.setNoOfSeats(tr.getNoOfSeats());
+				seatDto.setTier(trDto);
+				seatDtos.add(seatDto);
+			}
+			sdto.setSeats(seatDtos);
+			sdto.setDate(s.getDate());
 
 			sdtos.add(sdto);
 		}
