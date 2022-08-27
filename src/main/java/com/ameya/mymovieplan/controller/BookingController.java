@@ -1,5 +1,7 @@
 package com.ameya.mymovieplan.controller;
 
+import java.util.List;
+
 import com.ameya.mymovieplan.dto.BookingDto;
 import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
 import com.ameya.mymovieplan.exception.seat.NoSuchSeatException;
@@ -8,6 +10,8 @@ import com.ameya.mymovieplan.service.BookingService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +30,11 @@ public class BookingController {
 
 		return ResponseEntity.ok(bookingService.createBooking(createBooking));
 
+	}
+	
+	@GetMapping("/{userId}")
+	public ResponseEntity<List<BookingDto>> getAllBookings(@PathVariable String userId){
+		return ResponseEntity.ok(bookingService.getAllUserBookings(userId));
 	}
 
 }

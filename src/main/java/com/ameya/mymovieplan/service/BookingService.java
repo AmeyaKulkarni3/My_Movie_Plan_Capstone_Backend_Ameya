@@ -1,5 +1,7 @@
 package com.ameya.mymovieplan.service;
 
+import java.util.List;
+
 import com.ameya.mymovieplan.dto.BookingDto;
 import com.ameya.mymovieplan.exception.schedule.NoSuchScheduleException;
 import com.ameya.mymovieplan.exception.seat.NoSuchSeatException;
@@ -11,7 +13,7 @@ public interface BookingService {
 	
 	BookingDto getBookingById(int id);
 	
-	BookingDto getAllUserBookings(int userId);
+	List<BookingDto> getAllUserBookings(String userId);
 	
 	String deleteBooking(int id);
 

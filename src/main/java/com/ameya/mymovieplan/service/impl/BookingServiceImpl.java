@@ -44,6 +44,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @Service
 @PropertySource("classpath:BookingValidationMessages.properties")
 @Transactional
@@ -95,6 +97,16 @@ public class BookingServiceImpl implements BookingService {
 		booking.setUser(user);
 		
 		Booking saved = bookingRepository.save(booking);
+		
+		for(Seat s : seatEntities) {
+			s.setBooking(saved);
+			seatRepository.save(s);
+		}
+		
+		List<Booking> userBookings = user.getBookings();
+		userBookings.add(saved);
+		user.setBookings(userBookings);
+		userRepository.save(user);
 		
 		BookingDto bookingDto = dataTransfer(saved);
 		
@@ -208,9 +220,16 @@ public class BookingServiceImpl implements BookingService {
 	}
 
 	@Override
-	public BookingDto getAllUserBookings(int userId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<BookingDto> getAllUserBookings(String userId) {
+		UserEntity user = userRepository.findByUserId(userId);
+		List<Booking> bookings = user.getBookings();
+		List<BookingDto> bdtos = new ArrayList<>();
+		for(Booking b : bookings) {
+			BookingDto bdto = dataTransfer(b);
+			bdtos.add(bdto);
+		}
+		Collections.sort(bdtos);
+		return bdtos;
 	}
 
 	@Override
